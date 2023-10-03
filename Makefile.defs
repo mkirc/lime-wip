@@ -1,7 +1,0 @@
-LIB_QHULL = qhullstatic
-CCFLAGS += -I/usr/local/include/libqhull
-CCFLAGS += -I/home/mkirc/Documents/Physik/BA/LIME/include/include
-CCFLAGS += -I/home/mkirc/BA/LIME/include/hdf5-1.14.2/hdf5/include
-CCFLAGS += -L/home/mkirc/BA/LIME/include/hdf5-1.14.2/hdf5/lib
-PYCCFLAGS = -I/usr/include/python3.9 -I/usr/include/python3.9  -Wno-unused-result -Wsign-compare -g -ffile-prefix-map=/build/python3.9-RNBry6/python3.9-3.9.2=. -specs=/usr/share/dpkg/no-pie-compile.specs -fstack-protector -Wformat -Werror=format-security  -DNDEBUG -g -fwrapv -O3 -Wall
-PYLDFLAGS = -L/usr/lib/python3.9/config-3.9-x86_64-linux-gnu -L/usr/lib  -lcrypt -lpthread -ldl  -lutil -lm -lm 

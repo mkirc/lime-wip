@@ -1,0 +1,3 @@
+[submodule "tools/flashscripts"]
+	path = tools/flashscripts
+	url = git@projects.asu.cas.cz:wunsch/flashscripts.git

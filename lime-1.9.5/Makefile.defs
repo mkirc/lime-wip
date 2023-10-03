@@ -1,0 +1,6 @@
+LIB_QHULL = qhullstatic
+CCFLAGS += -I/usr/include/libqhull
+CCFLAGS += -I/usr/include
+CCFLAGS += -I/usr/include/hdf5/serial
+PYCCFLAGS = -I/usr/include/python3.10 -I/usr/include/python3.10  -Wno-unused-result -Wsign-compare -g      -fstack-protector-strong -Wformat -Werror=format-security  -DNDEBUG -g -fwrapv -O2 -Wall
+PYLDFLAGS = -L/usr/lib/python3.10/config-3.10-x86_64-linux-gnu -L/usr/lib/x86_64-linux-gnu  -lcrypt -ldl  -lm -lm 
