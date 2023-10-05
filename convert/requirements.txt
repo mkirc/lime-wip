@@ -1,0 +1,6 @@
+astropy==5.3.3
+h5py==3.9.0
+numpy==1.26.0
+packaging==23.2
+pyerfa==2.0.0.3
+PyYAML==6.0.1
