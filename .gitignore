@@ -19,3 +19,13 @@ doc/*.html
 # ignore python venv
 **/venv
 **/.venv
+
+# pycache
+**/__pycache__/
+
+# swp files
+**.swp
+
+# compressed artifacts
+**.zip
+**.tar*
