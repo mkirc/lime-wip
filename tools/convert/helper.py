@@ -22,7 +22,7 @@ def nulltermStringType(length):
 
 
 def setup_lime_stage_one(outFile, n_blocks, radius=0., minscale=0.):
-    outFile.attrs.create("RADIUS", radius, dtype=np.float64)
+    outFile.attrs.create("RADIUS  ", radius, dtype=np.float64)
     outFile.attrs.create("MINSCALE", minscale, dtype=np.float64)
     outFile.attrs.create("NSOLITER", 0, dtype=np.int32)
     grid_grp = outFile.create_group("GRID")
