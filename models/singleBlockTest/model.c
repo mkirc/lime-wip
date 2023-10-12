@@ -25,9 +25,9 @@ input(inputPars *par, image *img){
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
-  par->sampling                 = 2; // log distr. for radius, directions distr. uniformly on a sphere.
-  par->nSolveIters              = 14;
-  par->resetRNG	                = 0;
+  /* par->sampling                 = 2; // log distr. for radius, directions distr. uniformly on a sphere. */
+  /* par->nSolveIters              = 14; */
+  /* par->resetRNG	                = 0; */
 
 /* The following are deprecated. Only the VTK output is still considered useful.
   par->outputfile               = "populations.pop";
@@ -89,15 +89,15 @@ input(inputPars *par, image *img){
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
-  par->gridOutFiles[0] = "grid_stage_1.ds";
-  par->gridOutFiles[1] = "grid_stage_2.ds";
-  par->gridOutFiles[2] = "grid_stage_3.ds";
-  par->gridOutFiles[3] = "grid_stage_4.ds";
-  par->gridOutFiles[4] = "grid_stage_5.ds";
+  /* par->gridOutFiles[0] = "grid_stage_1.ds"; */
+  /* par->gridOutFiles[1] = "grid_stage_2.ds"; */
+  /* par->gridOutFiles[2] = "grid_stage_3.ds"; */
+  /* par->gridOutFiles[3] = "grid_stage_4.ds"; */
+  /* par->gridOutFiles[4] = "grid_stage_5.ds"; */
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
-  par->gridInFile = "grid_5.ds";
   */
+  par->gridInFile = "single_block_stage_1.h5";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
