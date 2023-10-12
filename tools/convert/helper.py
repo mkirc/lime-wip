@@ -4,6 +4,9 @@ from h5py import string_dtype
 from h5py import Datatype
 from h5py.h5t import TypeID, STR_NULLTERM
 
+def center_axis(arraylike):
+    return arraylike - (np.min(arraylike) - np.max(arraylike))
+
 
 def euclidianValue(euclidian):
     return np.array(
@@ -18,8 +21,8 @@ def nulltermStringType(length):
     return h5py.Datatype(type_id)
 
 
-def setup_lime_stage_one(outFile, n_blocks):
-    outFile.attrs.create("RADIUS", 123.0, dtype=np.float64)
+def setup_lime_stage_one(outFile, n_blocks, radius=0.):
+    outFile.attrs.create("RADIUS", radius, dtype=np.float64)
     grid_grp = outFile.create_group("GRID")
     grid_grp.attrs.create("CLASS", "HDU", dtype=nulltermStringType(4))
     grid_grp.attrs.create("COLLPAR1", "H2", dtype=nulltermStringType(3))
