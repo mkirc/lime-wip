@@ -21,8 +21,10 @@ def nulltermStringType(length):
     return h5py.Datatype(type_id)
 
 
-def setup_lime_stage_one(outFile, n_blocks, radius=0.):
+def setup_lime_stage_one(outFile, n_blocks, radius=0., minscale=0.):
     outFile.attrs.create("RADIUS", radius, dtype=np.float64)
+    outFile.attrs.create("MINSCALE", minscale, dtype=np.float64)
+    outFile.attrs.create("NSOLITER", 0, dtype=np.int32)
     grid_grp = outFile.create_group("GRID")
     grid_grp.attrs.create("CLASS", "HDU", dtype=nulltermStringType(4))
     grid_grp.attrs.create("COLLPAR1", "H2", dtype=nulltermStringType(3))
