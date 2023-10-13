@@ -4,8 +4,9 @@ from h5py import string_dtype
 from h5py import Datatype
 from h5py.h5t import TypeID, STR_NULLTERM
 
+
 def center_axis(arraylike):
-    return arraylike - (np.min(arraylike) - np.max(arraylike))
+    return arraylike - ((np.max(arraylike) + np.min(arraylike)) / 2)
 
 
 def euclidianValue(euclidian):
@@ -21,7 +22,7 @@ def nulltermStringType(length):
     return h5py.Datatype(type_id)
 
 
-def setup_lime_stage_one(outFile, n_blocks, radius=0., minscale=0.):
+def setup_lime_stage_one(outFile, n_blocks, radius=0.0, minscale=0.0):
     outFile.attrs.create("RADIUS  ", radius, dtype=np.float64)
     outFile.attrs.create("MINSCALE", minscale, dtype=np.float64)
     outFile.attrs.create("NSOLITER", 0, dtype=np.int32)
