@@ -55,12 +55,9 @@ if [[ -x "$LIME_DIR"/lime ]]; then
     else
         bash "$LIME_DIR"/lime "$@"
     fi
+    cleanup
 else
     echo "lime excutable (${LIME}) not found."
     exit 3
 fi
-
-# cleanup
-
-
 
