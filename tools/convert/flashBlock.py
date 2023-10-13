@@ -3,7 +3,7 @@ import h5py
 
 import numpy as np
 
-from helper import euclidianValue
+from helper import flatten3DValues
 
 
 class FlashBlockFactory:
@@ -17,6 +17,9 @@ class FlashBlockFactory:
         self.densities = self.file["dens"]
         self.blocks = np.array(self.file["node type"])
         self.leaves = np.where(self.blocks == 1)[0]  # node type == 1 -> leaf
+        self.indices = np.meshgrid(
+            *[range(nib) for nib in self.densities[0].shape], indexing="ij"
+        )
 
     def velocitiesForBlock(self, blockId):
         return (self.vels[0][blockId], self.vels[1][blockId], self.vels[2][blockId])
@@ -31,6 +34,7 @@ class FlashBlockFactory:
     def createBlock(self, blockId):
         return FlashBlock(
             blockId,
+            self.indices,
             self.bb[blockId],
             self.temperatures[blockId],
             self.dusttemperatures[blockId],
@@ -41,12 +45,9 @@ class FlashBlockFactory:
 
 
 class FlashBlock:
-    def __init__(self, blockId, bb, temp, tempdust, dens, vels, mags):
+    def __init__(self, blockId, indices, bb, temp, tempdust, dens, vels, mags):
         self.id = blockId
-        self.nxb, self.nyb, self.nzb = dens.shape
-        self._Ix, self._Iy, self._Iz = np.meshgrid(
-            range(self.nxb), range(self.nyb), range(self.nzb), indexing="ij"
-        )
+        self._Ix, self._Iy, self._Iz = indices
 
         self.gridpoints = self.gridpointsForBoundingbox(bb)
         self.temperatures = self.temperatures(temp)
@@ -56,6 +57,10 @@ class FlashBlock:
         self.magfluxes = self.magfluxes(mags)
 
     def gridpointsForBoundingbox(self, bb):
+        """takes np.array of shape (3,2) [x,y,z, (upper/lower)]. returns
+        row-major flattened np.array of coordinates of shape (self.nxb *
+        self.nyb * self.nzb, 3)"""
+
         (dx, x0), (dy, y0), (dz, z0) = [
             (bb[i][1] - bb[i][0], bb[i][0]) for i in range(3)
         ]
@@ -65,17 +70,17 @@ class FlashBlock:
             .T
         )
 
-    def velocities(self, velocities):
-        return euclidianValue(velocities)
-
-    def magfluxes(self, magfluxes):
-        return euclidianValue(magfluxes)
-
-    def densities(self, densities):
-        return densities.flatten()
-
     def temperatures(self, temperatures):
         return temperatures.flatten()
 
     def dusttemperatures(self, dusttemperatures):
         return dusttemperatures.flatten()
+
+    def densities(self, densities):
+        return densities.flatten()
+
+    def velocities(self, velocities):
+        return flatten3DValues(velocities[0], velocities[1], velocities[2])
+
+    def magfluxes(self, magfluxes):
+        return flatten3DValues(magfluxes[0], magfluxes[1], magfluxes[2])

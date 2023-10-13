@@ -4,7 +4,7 @@ import h5py
 import numpy as np
 
 from flashBlock import FlashBlockFactory
-from helper import setup_lime_stage_one, center_axis
+from helper import setupLIMEStage1, centerAxis
 
 
 def singleBlockTest():
@@ -19,16 +19,16 @@ def singleBlockTest():
 
         block = next(ff.generateBlocksForSlice(slice(0, 1)))
 
-        x1 = center_axis(block.gridpoints[:, 0])
+        x1 = centerAxis(block.gridpoints[:, 0])
 
         radius = np.max(x1)  # assumes cubic block
 
         minscale = 2 * np.max(x1) / 8  # assumes cubic centered block with nxb=8
 
-        lime_x1, lime_x2, lime_x3 = setup_lime_stage_one(
+        lime_x1, lime_x2, lime_x3 = setupLIMEStage1(
             outFile, n_blocks=1, radius=radius, minscale=minscale
         )
 
         lime_x1[0:512] = x1
-        lime_x2[0:512] = center_axis(block.gridpoints[:, 1])
-        lime_x3[0:512] = center_axis(block.gridpoints[:, 2])
+        lime_x2[0:512] = centerAxis(block.gridpoints[:, 1])
+        lime_x3[0:512] = centerAxis(block.gridpoints[:, 2])

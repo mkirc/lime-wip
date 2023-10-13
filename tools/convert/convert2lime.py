@@ -4,14 +4,14 @@ import h5py
 import numpy as np
 
 from flashBlock import FlashBlockFactory
-from helper import setup_lime_stage_one
+from helper import setupLIMEStage1
 
 
 if __name__ == "__main__":
     N_BLOCKS = 3
 
     with h5py.File(f"{sys.argv[2]}", "a") as outFile:
-        lime_x1, lime_x2, lime_x3 = setup_lime_stage_one(outFile, N_BLOCKS)
+        lime_x1, lime_x2, lime_x3 = setupLIMEStage1(outFile, N_BLOCKS)
 
         flashFile = h5py.File(sys.argv[1], "r")
 

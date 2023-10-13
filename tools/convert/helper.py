@@ -5,14 +5,15 @@ from h5py import Datatype
 from h5py.h5t import TypeID, STR_NULLTERM
 
 
-def center_axis(arraylike):
+def centerAxis(arraylike):
     return arraylike - ((np.max(arraylike) + np.min(arraylike)) / 2)
 
 
-def euclidianValue(euclidian):
-    return np.array(
-        [euclidian[0].flatten(), euclidian[1].flatten(), euclidian[2].flatten()]
-    ).T
+def flatten3DValues(valuesX, valuesY, valuesZ):
+    # takes 3d list of np.arrays of shape (x,y,z) returns 3d np.array of row-major
+    # flattened np.arrays of shape (x*y*z,)
+
+    return np.array([valuesX.flatten(), valuesY.flatten(), valuesZ.flatten()]).T
 
 
 def nulltermStringType(length):
@@ -22,7 +23,7 @@ def nulltermStringType(length):
     return h5py.Datatype(type_id)
 
 
-def setup_lime_stage_one(outFile, n_blocks, radius=0.0, minscale=0.0):
+def setupLIMEStage1(outFile, n_blocks, radius=0.0, minscale=0.0):
     outFile.attrs.create("RADIUS  ", radius, dtype=np.float64)
     outFile.attrs.create("MINSCALE", minscale, dtype=np.float64)
     outFile.attrs.create("NSOLITER", 0, dtype=np.int32)
