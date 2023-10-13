@@ -1,10 +1,6 @@
 #!/usr/bin/bash
 
-
 _base_path="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
-# if Makefile.defs does not exist or is older than ./configure,
-# run ./configure first.
 
 DEFS_FILE=/lime/Makefile.defs
 CONFIGURE=/lime-tools/configure
@@ -25,6 +21,8 @@ cleanup() {
 }
 
 run_configure() {
+    # if Makefile.defs does not exist or is older than ./configure,
+    # run ./configure first.
     if [[ ! -e "$DEFS_FILE" ]] || [[ "$DEFS_FILE" -ot "$CONFIGURE"  ]]; then
         bash "$CONFIGURE" "$DEFS_FILE"
         return $!
@@ -50,7 +48,7 @@ if [[ -x "$LIME_DIR"/lime ]]; then
     run_configure
 
     if [[ $# -eq 0 ]]; then
-        cd "$DEFAULT_MODEL"
+        cd "$DEFAULT_MODEL" || exit
         bash "$LIME_DIR"/lime -n /model.c
     else
         bash "$LIME_DIR"/lime "$@"
