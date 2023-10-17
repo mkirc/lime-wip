@@ -97,7 +97,7 @@ input(inputPars *par, image *img){
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
   */
-  par->gridInFile = "grid_stage_1.ds";
+  par->gridInFile = "grid_stage_4.ds";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
