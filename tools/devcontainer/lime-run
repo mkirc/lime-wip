@@ -13,7 +13,7 @@ trap cleanup ERR
 
 cleanup() {
     for f in "$DEFAULT_MODEL"/lime_*.x; do
-        rm "$f"
+        [[ -e "$f" ]] && rm "$f"
     done
 
     cp "$_base_path"/Makefile.bak "$LIME_DIR"/Makefile \
