@@ -1377,10 +1377,15 @@ Note that the calling routine needs to free gp, firstNearNeigh and collPartNames
   /* Find out how many rows there are, then malloc the array.
   */
   dset = H5Dopen(dataGroup, "ID", H5P_DEFAULT);
+  if(dset<0){
+    if(!silent) bail_out("ID column numSpaceDims<0");
+    exit(1);
+  }
 //*** test and error if return <0.
   space = H5Dget_space(dset);
   numSpaceDims = H5Sget_simple_extent_dims(space, spaceDims, maxSpaceDims);
   status = H5Sclose(space);
+  printf("%s\n" , status);
 //*** check status?
 
   if(numSpaceDims<0){
@@ -1410,6 +1415,7 @@ Note that the calling routine needs to free gp, firstNearNeigh and collPartNames
     return; /* I.e. with dataFlags left unchanged. */
   }
 
+  printf("First Error after that\n");
   /* Find out if the user has supplied ABUNMOLn or DENSMOLn columns.
   */
   *densMolColsExists = FALSE;
@@ -1417,6 +1423,7 @@ Note that the calling routine needs to free gp, firstNearNeigh and collPartNames
   if(dset==0)
     *densMolColsExists = TRUE;
   status = H5Dclose(dset);
+  printf("Second Error after that\n");
 
   /* Count the numbers of ABUNMOLn/DENSMOLn columns to get the number of species:
   */
@@ -1450,6 +1457,7 @@ Note that the calling routine needs to free gp, firstNearNeigh and collPartNames
 
   /* We have to do this here (as well after the call to readGrid()) because grid.x is a pre-sized array rather than a pointer we can malloc. Later this should be changed to allow us to define the sizes of all arrays in grid purely from the data in the file.
   */
+  printf("Second error before that\n");
   if(gridInfoRead->nDims!=DIM){
     if(!silent){
       sprintf(message, "%d Xn columns read, but there should be %d.", (int)gridInfoRead->nDims, DIM);

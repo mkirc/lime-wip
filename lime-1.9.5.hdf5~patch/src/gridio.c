@@ -768,6 +768,7 @@ NOTE that collPartNames and its components must be freed after use.
   */
   status = _readGridTable(fptr, gridInfoRead, gp, &firstNearNeigh\
     , collPartNames, numCollPartRead, dataFlags, densMolColsExists); /* Sets appropriate bits of dataFlags; also mallocs gp and sets all its defaults. */
+    printf("status?\n");
   totalNumGridPoints = gridInfoRead->nSinkPoints + gridInfoRead->nInternalPoints;
   if(status){
     closeAndFree(fptr, firstNearNeigh, nnLinks, links, 0);
