@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:16.04
 
 RUN apt-get update \
         && apt-get install -y \
@@ -8,11 +8,10 @@ RUN apt-get update \
             libatlas-base-dev \
             libncurses-dev \
             libqhull-dev \
-            libqhull8.0 \
-            gcc \
+            libqhull7 \
+            gcc-6-base \
             libhdf5-dev \
-            python3 \
-            python-dev-is-python3 \
+            python-dev \
         && mkdir /lime /lime-tools /model
 
 COPY configure /lime-tools

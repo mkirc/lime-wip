@@ -5,7 +5,7 @@ defsfile="/lime/Makefile.defs"
 [ -e $defsfile ] && rm $defsfile
 touch $defsfile
 
-echo "LIB_QHULL = qhullstatic" >> $defsfile
+echo "LIB_QHULL = qhull" >> $defsfile
 
 qhull_incs=( "/usr/include/libqhull" "/usr/include/qhull" "/opt/local/include/qhull" )
 
@@ -38,7 +38,7 @@ for incdir in ${hdf5_incs[@]}; do
 done
 
 
-pybin="python3"
+pybin="python"
 pyconf="$pybin-config"
 command -v $pyconf >/dev/null 2>&1 \
     || ! echo "python-config not found!" \

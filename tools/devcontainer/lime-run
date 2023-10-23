@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 _base_path="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -49,7 +49,7 @@ if [[ -x "$LIME_DIR"/lime ]]; then
 
     if [[ $# -eq 0 ]]; then
         cd "$DEFAULT_MODEL" || exit
-        bash "$LIME_DIR"/lime -n /model.c
+        bash "$LIME_DIR"/lime -n ./model.c
     else
         bash "$LIME_DIR"/lime "$@"
     fi
