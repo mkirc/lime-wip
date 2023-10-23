@@ -9,14 +9,13 @@ class FileWriter:
     def write(self, data):
         raise NotImplementedError
 
-class LIMEWriter(FileWriter):
 
+class LIMEWriter(FileWriter):
     def __init__(self, filePath, nBlocks):
         super().__init__(filePath)
         self.nBlocks = nBlocks
 
     def write(self, blocks):
-
         with h5py.File(f"{filePath}", "w") as outFile:
             x1, x2, x3 = setupLIMEStage1(outFile, self.nBlocks)
 
@@ -28,33 +27,40 @@ class LIMEWriter(FileWriter):
                 i += 1
                 del block
 
-class CArrayWriter(Filewriter):
 
+class CArrayWriter(FileWriter):
     def __init__(self, filePath, nBlocks):
         super().__init__(filePath)
 
         self.nBlocks = nBlocks
 
     def write(self, blocks):
-
-        block = blocks[0]
-        with open(f"{filePath}", "w") as outFile:
+        block = next(blocks)
+        with open(f"{self.filePath}", "w") as outFile:
             size = self.nBlocks * 512
-            lines = [f"int size={size};"]
+            lines = [f"static int model_size={size};"]
             lines += [
-                f"double model_x[{size}] = {"
-                f"{','.join(block.gridpoints[:, 0])}};"
+                f"static double model_x[model_size] = "
+                + "{"
+                + f"{','.join([str(p) for p in block.gridpoints[:, 0]])}"
+                + "};"
             ]
             lines += [
-                f"double model_y[{size}] = {"
-                f"{','.join(block.gridpoints[:, 1])}};"
+                f"static double model_y[model_size] = "
+                + "{"
+                + f"{','.join([str(p) for p in block.gridpoints[:, 1]])}"
+                + "};"
             ]
             lines += [
-                f"double model_z[{size}] = {"
-                f"{','.join(block.gridpoints[:, 2])}};"
+                f"static double model_z[model_size] = "
+                + "{"
+                + f"{','.join([str(p) for p in block.gridpoints[:, 2]])}"
+                + "};"
             ]
             lines += [
-                f"double model_density[{size}] = {"
-                f"{','.join(block.densities)}};"
+                f"static double model_density[model_size] = "
+                + "{"
+                + f"{','.join([str(d) for d in block.densities])}"
+                + "};"
             ]
-            outFile.write('\n'.join(lines))
+            outFile.write("\n".join(lines))
