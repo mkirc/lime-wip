@@ -29,3 +29,6 @@ doc/*.html
 # compressed artifacts
 **.zip
 **.tar*
+
+# vanilla lime dir
+lime-1.9.5/
