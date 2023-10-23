@@ -13,5 +13,5 @@ if __name__ == "__main__":
     outFilePath = sys.argv[2]
     ff = FlashBlockFactory(flashFile)
     cw = CArrayWriter(outFilePath, 1)
-    cw.write(ff.generateBlocksForSlice(slice(0,N_BLOCKS)))
+    cw.writeSingleBlock(ff.generateBlocksForSlice(slice(0,N_BLOCKS)))
 

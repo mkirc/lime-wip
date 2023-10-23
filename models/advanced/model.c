@@ -16,21 +16,20 @@
 void
 input(inputPars *par, image *img){
 
-  printf("%d\n", model_size);
   int i;
 
   /*
    * Basic parameters. See cheat sheet for details.
    */
-  par->radius                   = 2000*AU;
-  par->minScale                 = 0.5*AU;
-  par->pIntensity               = 4000;
-  par->sinkPoints               = 3000;
+  par->radius                   = model_radius;
+  par->minScale                 = model_minscale;
+  par->pIntensity               = 400;
+  par->sinkPoints               = 300;
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
-  par->sampling                 = 2; // log distr. for radius, directions distr. uniformly on a sphere.
-  par->nSolveIters              = 14;
+  par->sampling                 = 1; //  uniformly on a sphere.
+  par->nSolveIters              = 3;
   par->resetRNG	                = 0;
 
 /* The following are deprecated. Only the VTK output is still considered useful.
@@ -78,7 +77,7 @@ input(inputPars *par, image *img){
 
     par->collPartNames: this helps make a firm connection between the density functions and the collision partner information in the moldatfile.
 
-    par->collPartMolWeights: this now allows control over the calculation of the dust opacity.
+    par->collPartMolWeights: this now allows control over the calculation of the dust opacity.                  ]
 
     Note that there are convenient macros defined in ../src/collparts.h for
     7 types of collision partner.
@@ -93,11 +92,11 @@ input(inputPars *par, image *img){
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
-  par->gridOutFiles[0] = "grid_stage_1.ds";
-  par->gridOutFiles[1] = "grid_stage_2.ds";
-  par->gridOutFiles[2] = "grid_stage_3.ds";
-  par->gridOutFiles[3] = "grid_stage_4.ds";
-  par->gridOutFiles[4] = "grid_stage_5.ds";
+  /* par->gridOutFiles[0] = "grid_stage_1.ds"; */
+  /* par->gridOutFiles[1] = "grid_stage_2.ds"; */
+  /* par->gridOutFiles[2] = "grid_stage_3.ds"; */
+  /* par->gridOutFiles[3] = "grid_stage_4.ds"; */
+  /* par->gridOutFiles[4] = "grid_stage_5.ds"; */
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
   par->gridInFile = "grid_5.ds";
@@ -140,26 +139,24 @@ input(inputPars *par, image *img){
 
 void
 density(double x, double y, double z, double *density){
-  /*
-   * Define variable for radial coordinate
-   */
-  double r, rToUse;
-  const double rMin = 0.7*AU; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+    /* calculates distance to nearest point of input model,
+     * returning its density
+     */
+    double mindist = model_minscale;
+    double dist, dx, dy, dz;
+    double best_dens = 0.;
+    for(int i=0; i<model_size; i++){
+        dx = x - model_x[i];
+        dy = y - model_y[i];
+        dz = z - model_z[i];
+        dist = sqrt(dx*dx + dy*dy + dz*dz);
+        if(dist < mindist) {
+            mindist = dist;
+            best_dens = model_density[i];
+        }
+    }
 
-  /*
-   * Calculate radial distance from origin
-   */
-  r=sqrt(x*x+y*y+z*z);
-  /*
-   * Calculate a spherical power-law density profile
-   * (Multiply with 1e6 to go to SI-units)
-   */
-  if(r>rMin)
-    rToUse = r;
-  else
-    rToUse = rMin; /* Just to prevent overflows at r==0! */
-
-  density[0] = 1.5e6*pow(rToUse/(300*AU),-1.5)*1e6;
+    density[0] = best_dens;
 }
 
 /******************************************************************************/

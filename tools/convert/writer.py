@@ -34,31 +34,32 @@ class CArrayWriter(FileWriter):
 
         self.nBlocks = nBlocks
 
-    def write(self, blocks):
-        block = next(blocks)
+    def writeSingleBlock(self, block, radius=0, minscale=0):
         with open(f"{self.filePath}", "w") as outFile:
             size = self.nBlocks * 512
             lines = [f"static int model_size={size};"]
+            lines += [f"static double model_radius={radius};"]
+            lines += [f"static double model_minscale={minscale};"]
             lines += [
-                f"static double model_x[model_size] = "
+                f"static double model_x[{size}] = "
                 + "{"
                 + f"{','.join([str(p) for p in block.gridpoints[:, 0]])}"
                 + "};"
             ]
             lines += [
-                f"static double model_y[model_size] = "
+                f"static double model_y[{size}] = "
                 + "{"
                 + f"{','.join([str(p) for p in block.gridpoints[:, 1]])}"
                 + "};"
             ]
             lines += [
-                f"static double model_z[model_size] = "
+                f"static double model_z[{size}] = "
                 + "{"
                 + f"{','.join([str(p) for p in block.gridpoints[:, 2]])}"
                 + "};"
             ]
             lines += [
-                f"static double model_density[model_size] = "
+                f"static double model_density[{size}] = "
                 + "{"
                 + f"{','.join([str(d) for d in block.densities])}"
                 + "};"

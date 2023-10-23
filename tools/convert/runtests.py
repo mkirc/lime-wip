@@ -1,5 +1,6 @@
-from tests.tests import singleBlockTest
+from tests.tests import singleBlockTest, singleBlockCArrayTest
 
 if __name__ == "__main__":
 
-    singleBlockTest()
+    # singleBlockTest()
+    singleBlockCArrayTest()
