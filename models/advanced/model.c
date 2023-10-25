@@ -23,20 +23,20 @@ input(inputPars *par, image *img){
    */
   par->radius                   = model_radius;
   par->minScale                 = model_minscale;
-  par->pIntensity               = 400;
-  par->sinkPoints               = 300;
+  par->pIntensity               = 512;
+  par->sinkPoints               = 296;
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
-  par->sampling                 = 1; //  uniformly on a sphere.
+  par->sampling                 = 0; //  uniformly on a sphere.
   par->nSolveIters              = 3;
   par->resetRNG	                = 0;
 
 /* The following are deprecated. Only the VTK output is still considered useful.
   par->outputfile               = "populations.pop";
   par->binoutputfile            = "restart.pop";
-  par->gridfile                 = "grid.vtk";
 */
+  par->gridfile                 = "grid.vtk";
 
   /*
     Setting elements of the following three arrays is optional. NOTE
@@ -99,8 +99,8 @@ input(inputPars *par, image *img){
   /* par->gridOutFiles[4] = "grid_stage_5.ds"; */
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
-  par->gridInFile = "grid_5.ds";
   */
+  par->gridInFile = "grid_stage_3.ds";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
@@ -136,28 +136,54 @@ input(inputPars *par, image *img){
 }
 
 /******************************************************************************/
-
 void
 density(double x, double y, double z, double *density){
-    /* calculates distance to nearest point of input model,
-     * returning its density
-     */
-    double mindist = model_minscale;
-    double dist, dx, dy, dz;
-    double best_dens = 0.;
-    for(int i=0; i<model_size; i++){
-        dx = x - model_x[i];
-        dy = y - model_y[i];
-        dz = z - model_z[i];
-        dist = sqrt(dx*dx + dy*dy + dz*dz);
-        if(dist < mindist) {
-            mindist = dist;
-            best_dens = model_density[i];
-        }
-    }
+  /*
+   * Define variable for radial coordinate
+   */
+  double r, rToUse;
+  const double rMin = 0.7*model_radius; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
 
-    density[0] = best_dens;
+  /*
+   * Calculate radial distance from origin
+   */
+  r=sqrt(x*x+y*y+z*z);
+  /*
+   * Calculate a spherical power-law density profile
+   * (Multiply with 1e6 to go to SI-units)
+   */
+  if(r>rMin)
+    rToUse = r;
+  else
+    rToUse = rMin; /* Just to prevent overflows at r==0! */
+
+  density[0] = 1.5e6*pow(rToUse/(0.1 * model_radius),-1.5)*1e6;
 }
+/* void */
+/* density(double x, double y, double z, double *density){ */
+/*     /1* calculates distance to nearest point of input model, */
+/*      * returning its density */
+/*      *1/ */
+/*     double mindist = model_minscale; */
+/*     double dist, dx, dy, dz; */
+/*     double best_dens = 0.; */
+/*     printf("[%f, %f, %f]\n", x, y, z); */
+/*     double r = sqrt(x*x + y*y + z*z); */
+/*     if(r > model_radius) { */
+/*         printf("huh?\n"); */
+/*     } */
+/*     for(int i=0; i<model_size; i++){ */
+/*         dx = x - model_x[i]; */
+/*         dy = y - model_y[i]; */
+/*         dz = z - model_z[i]; */
+/*         dist = sqrt(dx*dx + dy*dy + dz*dz); */
+/*         if(dist < mindist) { */
+/*             mindist = dist; */
+/*             best_dens = model_density[i]; */
+/*         } */
+/*     } */
+/*     density[0] = best_dens; */
+/* } */
 
 /******************************************************************************/
 
