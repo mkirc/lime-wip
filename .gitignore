@@ -1,6 +1,5 @@
-# Ignore backups
-*~
-
+# Ignore Coredumps
+**/core
 # Ignore MacOS files
 .DS_Store
 
