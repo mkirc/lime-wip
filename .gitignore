@@ -1,0 +1,30 @@
+# Ignore Coredumps
+**/core
+# Ignore MacOS files
+.DS_Store
+
+# Ignore example files
+**/*.vtk
+**/*.pop
+**/*.ds
+**/*.fits*
+**/lime_*.x
+**/*_archive
+**/vlog.txt
+
+# Ignore html doc files
+doc/*.html
+
+# ignore python venv
+**/venv
+**/.venv
+
+# pycache
+**/__pycache__/
+
+# swp files
+**.swp
+
+# compressed artifacts
+**.zip
+**.tar*
