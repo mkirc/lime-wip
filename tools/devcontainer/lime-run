@@ -36,6 +36,8 @@ backup_makefile() {
 }
 
 patch_makefile() {
+    # if backup is more recent than Makefile, patch Makefile for
+    # correct libraries and compilation flags
     if [[ "$_base_path"/Makefile.bak -nt "$LIME_DIR"/Makefile ]]; then
         sed -i 's/-lhdf5/-lhdf5_serial/g' "$LIME_DIR"/Makefile
         sed -i '/CCFLAGS += -DH5_NO_DEPRECATED_SYMBOLS/d' "$LIME_DIR"/Makefile
@@ -49,7 +51,7 @@ if [[ -x "$LIME_DIR"/lime ]]; then
 
     if [[ $# -eq 0 ]]; then
         cd "$DEFAULT_MODEL" || exit
-        bash "$LIME_DIR"/lime -n ./model.c
+        bash "$LIME_DIR"/lime -n ./model.c "$@"
         LIME_EXIT_STATUS=$?
     else
         bash "$LIME_DIR"/lime "$@"
