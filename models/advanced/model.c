@@ -23,8 +23,8 @@ input(inputPars *par, image *img){
    */
   par->radius                   = model_radius;
   par->minScale                 = model_minscale;
-  par->pIntensity               = 5120;
-  par->sinkPoints               = 2960;
+  par->pIntensity               = 4096;
+  par->sinkPoints               = 2048;
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
@@ -92,15 +92,15 @@ input(inputPars *par, image *img){
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
-  par->gridOutFiles[0] = "grid_stage_1.ds";
-  par->gridOutFiles[1] = "grid_stage_2.ds";
-  par->gridOutFiles[2] = "grid_stage_3.ds";
-  par->gridOutFiles[3] = "grid_stage_4.ds";
-  par->gridOutFiles[4] = "grid_stage_5.ds";
+  /* par->gridOutFiles[0] = "grid_stage_1.ds"; */
+  /* par->gridOutFiles[1] = "grid_stage_2.ds"; */
+  /* par->gridOutFiles[2] = "grid_stage_3.ds"; */
+  /* par->gridOutFiles[3] = "grid_stage_4.ds"; */
+  /* par->gridOutFiles[4] = "grid_stage_5.ds"; */
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
   */
-  /* par->gridInFile = "grid_stage_1.ds"; */
+  par->gridInFile = "grid_stage_4.ds";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
@@ -111,7 +111,7 @@ input(inputPars *par, image *img){
   img[i].trans                  = 3;              // zero-indexed J quantum number
   img[i].pxls                   = 100;            // Pixels per dimension
   img[i].imgres                 = 0.1;            // Resolution in arc seconds
-  img[i].distance               = 10*model_radius;         // source distance in m
+  img[i].distance               = 1e5*model_radius;         // source distance in m
   img[i].source_vel             = 0;              // source velocity in m/s
   img[i].azimuth                = 0.0;
   img[i].incl                   = 0.0;
@@ -131,7 +131,7 @@ input(inputPars *par, image *img){
    * A single image unit can also be specified for each image using img[].unit as in previous LIME versions. Note that
    * only img[].units or img[].unit should be set for each image.
   */
-  img[i].unit                   = 0;
+  img[i].units                  = "0 4";
   img[i].filename               = "image0.fits";   // Output filename
 }
 
@@ -142,7 +142,7 @@ density(double x, double y, double z, double *density){
    * Define variable for radial coordinate
    */
   double r, rToUse;
-  const double rMin = 0.7*model_radius; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+  const double rMin = 0.2*model_radius; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
 
   /*
    * Calculate radial distance from origin
@@ -248,7 +248,8 @@ doppler(double x, double y, double z, double *doppler){
 void
 velocity(double x, double y, double z, double *vel){
   double r, rToUse, ffSpeed;
-  const double rMin = 0.1*AU; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+   /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+  const double rMin = 0.1*model_minscale;
 
   /*
    * Calculate radial distance from origin
