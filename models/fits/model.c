@@ -8,32 +8,35 @@
  */
 
 #include "lime.h"
+#include "model_constants.h"
 
 /******************************************************************************/
 
+
 void
 input(inputPars *par, image *img){
+
   int i;
 
   /*
    * Basic parameters. See cheat sheet for details.
    */
-  par->radius                   = 2000*AU;
-  par->minScale                 = 0.5*AU;
-  par->pIntensity               = 4000;
-  par->sinkPoints               = 3000;
+  par->radius                   = model_radius;
+  par->minScale                 = model_minscale;
+  par->pIntensity               = 4096;
+  par->sinkPoints               = 2048;
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
-  par->sampling                 = 2; // log distr. for radius, directions distr. uniformly on a sphere.
-  par->nSolveIters              = 14;
+  par->sampling                 = 0; //  uniformly on a sphere.
+  par->nSolveIters              = 3;
   par->resetRNG	                = 0;
 
 /* The following are deprecated. Only the VTK output is still considered useful.
   par->outputfile               = "populations.pop";
   par->binoutputfile            = "restart.pop";
-  par->gridfile                 = "grid.vtk";
 */
+  par->gridfile                 = "grid.vtk";
 
   /*
     Setting elements of the following three arrays is optional. NOTE
@@ -74,7 +77,7 @@ input(inputPars *par, image *img){
 
     par->collPartNames: this helps make a firm connection between the density functions and the collision partner information in the moldatfile.
 
-    par->collPartMolWeights: this now allows control over the calculation of the dust opacity.
+    par->collPartMolWeights: this now allows control over the calculation of the dust opacity.                  ]
 
     Note that there are convenient macros defined in ../src/collparts.h for
     7 types of collision partner.
@@ -89,16 +92,15 @@ input(inputPars *par, image *img){
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
-  par->gridfile = "gridfile.vtk";
-  par->gridOutFiles[0] = "grid_stage_1.ds";
-  par->gridOutFiles[1] = "grid_stage_2.ds";
-  par->gridOutFiles[2] = "grid_stage_3.ds";
-  par->gridOutFiles[3] = "grid_stage_4.ds";
-  par->gridOutFiles[4] = "grid_stage_5.ds";
+  /* par->gridOutFiles[0] = "grid_stage_1.ds"; */
+  /* par->gridOutFiles[1] = "grid_stage_2.ds"; */
+  /* par->gridOutFiles[2] = "grid_stage_3.ds"; */
+  /* par->gridOutFiles[3] = "grid_stage_4.ds"; */
+  /* par->gridOutFiles[4] = "grid_stage_5.ds"; */
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
-  par->gridInFile = "grid_5.ds";
   */
+  par->gridInFile = "grid_stage_4.ds";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
@@ -109,7 +111,7 @@ input(inputPars *par, image *img){
   img[i].trans                  = 3;              // zero-indexed J quantum number
   img[i].pxls                   = 100;            // Pixels per dimension
   img[i].imgres                 = 0.1;            // Resolution in arc seconds
-  img[i].distance               = 140*PC;         // source distance in m
+  img[i].distance               = 1e5*model_radius;         // source distance in m
   img[i].source_vel             = 0;              // source velocity in m/s
   img[i].azimuth                = 0.0;
   img[i].incl                   = 0.0;
@@ -129,19 +131,18 @@ input(inputPars *par, image *img){
    * A single image unit can also be specified for each image using img[].unit as in previous LIME versions. Note that
    * only img[].units or img[].unit should be set for each image.
   */
-  img[i].unit                   = 0;
+  img[i].units                  = "0 4";
   img[i].filename               = "image0.fits";   // Output filename
 }
 
 /******************************************************************************/
-
 void
 density(double x, double y, double z, double *density){
   /*
    * Define variable for radial coordinate
    */
   double r, rToUse;
-  const double rMin = 0.7*AU; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+  const double rMin = 0.2*model_radius; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
 
   /*
    * Calculate radial distance from origin
@@ -156,8 +157,33 @@ density(double x, double y, double z, double *density){
   else
     rToUse = rMin; /* Just to prevent overflows at r==0! */
 
-  density[0] = 1.5e6*pow(rToUse/(300*AU),-1.5)*1e6;
+  density[0] = 1.5e6*pow(rToUse/(0.1 * model_radius),-1.5)*1e6;
 }
+/* void */
+/* density(double x, double y, double z, double *density){ */
+/*     /1* calculates distance to nearest point of input model, */
+/*      * returning its density */
+/*      *1/ */
+/*     double mindist = model_minscale; */
+/*     double dist, dx, dy, dz; */
+/*     double best_dens = 0.; */
+/*     printf("[%f, %f, %f]\n", x, y, z); */
+/*     double r = sqrt(x*x + y*y + z*z); */
+/*     if(r > model_radius) { */
+/*         printf("huh?\n"); */
+/*     } */
+/*     for(int i=0; i<model_size; i++){ */
+/*         dx = x - model_x[i]; */
+/*         dy = y - model_y[i]; */
+/*         dz = z - model_z[i]; */
+/*         dist = sqrt(dx*dx + dy*dy + dz*dz); */
+/*         if(dist < mindist) { */
+/*             mindist = dist; */
+/*             best_dens = model_density[i]; */
+/*         } */
+/*     } */
+/*     density[0] = best_dens; */
+/* } */
 
 /******************************************************************************/
 
@@ -222,7 +248,8 @@ doppler(double x, double y, double z, double *doppler){
 void
 velocity(double x, double y, double z, double *vel){
   double r, rToUse, ffSpeed;
-  const double rMin = 0.1*AU; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+   /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+  const double rMin = 0.1*model_minscale;
 
   /*
    * Calculate radial distance from origin
