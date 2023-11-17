@@ -21,15 +21,15 @@ input(inputPars *par, image *img){
   /*
    * Basic parameters. See cheat sheet for details.
    */
-  par->radius                   = model_radius;
-  par->minScale                 = model_minscale;
+  par->radius                   = 7.07017576604457e+17;
+  par->minScale                 = 1.928548549079859e+16;
   par->pIntensity               = 512;
   par->sinkPoints               = 296;
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
   par->sampling                 = 0; //  uniformly on a sphere.
-  par->nSolveIters              = 3;
+  par->nSolveIters              = 10;
   par->resetRNG	                = 0;
 
 /* The following are deprecated. Only the VTK output is still considered useful.
@@ -81,7 +81,7 @@ input(inputPars *par, image *img){
 
     Note that there are convenient macros defined in ../src/collparts.h for
     7 types of collision partner.
-
+                                                 ID column numSpaceDims
     Below is an example of how you might use these parameters:
   */
 
@@ -92,15 +92,16 @@ input(inputPars *par, image *img){
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
-  /* par->gridOutFiles[0] = "grid_stage_1.h5"; */
-  /* par->gridOutFiles[1] = "grid_stage_2.h5"; */
-  /* par->gridOutFiles[2] = "grid_stage_3.h5"; */
-  /* par->gridOutFiles[3] = "grid_stage_4.h5"; */
-  /* par->gridOutFiles[4] = "grid_stage_5.h5"; */
+  par->gridOutFiles[0] = "grid_stage_1.h5";
+  par->gridOutFiles[1] = "grid_stage_2.h5";
+  par->gridOutFiles[2] = "grid_stage_3.h5";
+  par->gridOutFiles[3] = "grid_stage_4.h5";
+  par->gridOutFiles[4] = "grid_stage_5.h5";
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
   */
-  par->gridInFile = "grid_stage_1.h5";
+  /* par->gridInFile = "single_block_stage_1.h5"; */
+  par->gridInFile = "all_test.h5";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
@@ -141,23 +142,24 @@ density(double x, double y, double z, double *density){
   /*
    * Define variable for radial coordinate
    */
-  double r, rToUse;
-  const double rMin = 0.2*model_radius; /* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). */
+  /*double r, rToUse; */
+  /*const double rMin = 0.2*model_radius; /1* This cutoff should be chosen smaller than par->minScale but greater than zero (to avoid a singularity at the origin). *1/ */
 
-  /*
-   * Calculate radial distance from origin
-   */
-  r=sqrt(x*x+y*y+z*z);
-  /*
-   * Calculate a spherical power-law density profile
-   * (Multiply with 1e6 to go to SI-units)
-   */
-  if(r>rMin)
-    rToUse = r;
-  else
-    rToUse = rMin; /* Just to prevent overflows at r==0! */
+  /*/1* */
+  /* * Calculate radial distance from origin */
+  /* *1/ */
+  /*r=sqrt(x*x+y*y+z*z); */
+  /*/1* */
+  /* * Calculate a spherical power-law density profile */
+  /* * (Multiply with 1e6 to go to SI-units) */
+  /* *1/ */
+  /*if(r>rMin) */
+  /*  rToUse = r; */
+  /*else */
+  /*  rToUse = rMin; /1* Just to prevent overflows at r==0! *1/ */
 
-  density[0] = 1.5e6*pow(rToUse/(0.1 * model_radius),-1.5)*1e6;
+  /*density[0] = 1.5e6*pow(rToUse/(0.1 * model_radius),-1.5)*1e6; */
+    density[0] = 1.5e12;
 }
 /* void */
 /* density(double x, double y, double z, double *density){ */
@@ -189,34 +191,35 @@ density(double x, double y, double z, double *density){
 
 void
 temperature(double x, double y, double z, double *temperature){
-  int i,x0=0;
-  double r;
-  /*
-   * Array containing temperatures as a function of radial
-   * distance from origin (this is an example of a tabulated model)
-   */
-  double temp[2][10] = {
-      {2.0e13, 5.0e13, 8.0e13, 1.1e14, 1.4e14, 1.7e14, 2.0e14, 2.3e14, 2.6e14, 2.9e14},
-      {44.777, 31.037, 25.718, 22.642, 20.560, 19.023, 17.826, 16.857, 16.050, 15.364}
-  };
-  /*
-   * Calculate radial distance from origin
-   */
-  r=sqrt(x*x+y*y+z*z);
-  /*
-   * Linear interpolation in temperature input
-   */
-  if(r > temp[0][0] && r<temp[0][9]){
-    for(i=0;i<9;i++){
-      if(r>temp[0][i] && r<temp[0][i+1]) x0=i;
-    }
-  }
-  if(r<temp[0][0])
-    temperature[0]=temp[1][0];
-  else if (r>temp[0][9])
-    temperature[0]=temp[1][9];
-  else
-    temperature[0]=temp[1][x0]+(r-temp[0][x0])*(temp[1][x0+1]-temp[1][x0])/(temp[0][x0+1]-temp[0][x0]);
+  /*int i,x0=0; */
+  /*double r; */
+  /*/1* */
+  /* * Array containing temperatures as a function of radial */
+  /* * distance from origin (this is an example of a tabulated model) */
+  /* *1/ */
+  /*double temp[2][10] = { */
+  /*    {2.0e13, 5.0e13, 8.0e13, 1.1e14, 1.4e14, 1.7e14, 2.0e14, 2.3e14, 2.6e14, 2.9e14}, */
+  /*    {44.777, 31.037, 25.718, 22.642, 20.560, 19.023, 17.826, 16.857, 16.050, 15.364} */
+  /*}; */
+  /*/1* */
+  /* * Calculate radial distance from origin */
+  /* *1/ */
+  /*r=sqrt(x*x+y*y+z*z); */
+  /*/1* */
+  /* * Linear interpolation in temperature input */
+  /* *1/ */
+  /*if(r > temp[0][0] && r<temp[0][9]){ */
+  /*  for(i=0;i<9;i++){ */
+  /*    if(r>temp[0][i] && r<temp[0][i+1]) x0=i; */
+  /*  } */
+  /*} */
+  /*if(r<temp[0][0]) */
+  /*  temperature[0]=temp[1][0]; */
+  /*else if (r>temp[0][9]) */
+  /*  temperature[0]=temp[1][9]; */
+  /*else */
+  /*  temperature[0]=temp[1][x0]+(r-temp[0][x0])*(temp[1][x0+1]-temp[1][x0])/(temp[0][x0+1]-temp[0][x0]); */
+    temperature[0] = 15.;
 }
 
 /******************************************************************************/
