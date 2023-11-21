@@ -21,15 +21,15 @@ input(inputPars *par, image *img){
   /*
    * Basic parameters. See cheat sheet for details.
    */
-  par->radius                   = 7.07017576604457e+17;
-  par->minScale                 = 1.928548549079859e+16;
+  par->radius                   = 1.0689101029982582e+18;
+  par->minScale                 = 1.928548549079859e+17;
   par->pIntensity               = 512;
   par->sinkPoints               = 296;
 
   par->dust                     = "jena_thin_e6.tab";
   par->moldatfile[0]            = "hco+@xpol.dat";
   par->sampling                 = 0; //  uniformly on a sphere.
-  par->nSolveIters              = 10;
+  par->nSolveIters              = 1;
   par->resetRNG	                = 0;
 
 /* The following are deprecated. Only the VTK output is still considered useful.
@@ -92,7 +92,7 @@ input(inputPars *par, image *img){
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
-  par->gridOutFiles[0] = "grid_stage_1.h5";
+  /* par->gridOutFiles[0] = "grid_stage_1.h5"; */
   par->gridOutFiles[1] = "grid_stage_2.h5";
   par->gridOutFiles[2] = "grid_stage_3.h5";
   par->gridOutFiles[3] = "grid_stage_4.h5";
@@ -100,8 +100,10 @@ input(inputPars *par, image *img){
 
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
   */
+  /* par->gridInFile = "grid_stage_4.h5"; */
   /* par->gridInFile = "single_block_stage_1.h5"; */
-  par->gridInFile = "all_test.h5";
+  /* par->gridInFile = "all_test.h5"; */
+  par->gridInFile = "joke.h5";
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
@@ -112,9 +114,9 @@ input(inputPars *par, image *img){
   img[i].trans                  = 3;              // zero-indexed J quantum number
   img[i].pxls                   = 100;            // Pixels per dimension
   img[i].imgres                 = 0.1;            // Resolution in arc seconds
-  img[i].distance               = 1e5*model_radius;         // source distance in m
+  img[i].distance               = 3e3*model_radius;         // source distance in m
   img[i].source_vel             = 0;              // source velocity in m/s
-  img[i].azimuth                = 0.0;
+  img[i].azimuth                = 4.7;
   img[i].incl                   = 0.0;
   img[i].posang                 = 0.0;
 
