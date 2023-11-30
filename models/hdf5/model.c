@@ -89,6 +89,8 @@ input(inputPars *par, image *img){
   par->nMolWeights[0]           = 1.0;
   par->collPartNames[0]         = "H2";
   par->collPartMolWeights[0]    = 2.0159;
+  par->nThreads                 = 6;
+  /* par->polarization             = 1; */ // needed for magfield to be working, and vice versa
 
   /* Set one or more of the following parameters for full output of the grid-specific data at any of 4 stages during the processing. (See the header of gridio.c for information about the stages.)
   */
@@ -101,22 +103,22 @@ input(inputPars *par, image *img){
   /* You can also optionally read in a FITS file stored via the previous parameters, or prepared externally. See the header of grid2fits.c for information about the correct file format. LIME can cope with almost any sensible subset of the recognized columns; it will use the file values if they are present, then calculate the missing ones.
   */
   /* par->gridInFile = "grid_stage_4.h5"; */
-  /* par->gridInFile = "single_block_stage_1.h5"; */
-  /* par->gridInFile = "all_test.h5"; */
-  par->gridInFile = "joke.h5";
+  /* par->gridInFile = "single_test.h5"; */
+  par->gridInFile = "all_test.h5";
+  /* par->gridInFile = "three_test.h5"; */
 
   /*
    * Definitions for image #0. Add blocks with successive values of i for additional images.
    */
   i=0;
-  img[i].nchan                  = 61;             // Number of channels
-  img[i].velres                 = 500.;           // Channel resolution in m/s
-  img[i].trans                  = 3;              // zero-indexed J quantum number
-  img[i].pxls                   = 100;            // Pixels per dimension
-  img[i].imgres                 = 0.1;            // Resolution in arc seconds
-  img[i].distance               = 3e3*model_radius;         // source distance in m
-  img[i].source_vel             = 0;              // source velocity in m/s
-  img[i].azimuth                = 4.7;
+  img[i].nchan                  = 61;                // Number of channels
+  img[i].velres                 = 500.;              // Channel resolution in m/s
+  img[i].trans                  = 3;                 // zero-indexed J quantum number
+  img[i].pxls                   = 1e3;               // Pixels per dimension
+  img[i].imgres                 = 0.1;               // Resolution in arc seconds
+  img[i].distance               = 1e3*model_radius;  // source distance in m
+  img[i].source_vel             = 0;                 // source velocity in m/s
+  img[i].azimuth                = 0.0;
   img[i].incl                   = 0.0;
   img[i].posang                 = 0.0;
 
@@ -134,7 +136,7 @@ input(inputPars *par, image *img){
    * A single image unit can also be specified for each image using img[].unit as in previous LIME versions. Note that
    * only img[].units or img[].unit should be set for each image.
   */
-  img[i].units                  = "0 4";
+  img[i].units                  = "0 1 4";
   img[i].filename               = "image0.fits";   // Output filename
 }
 
@@ -278,4 +280,10 @@ velocity(double x, double y, double z, double *vel){
 
 /******************************************************************************/
 
-
+void
+magfield(double x, double y, double z, double *B){
+  // this is just for getting the hdf5 column names
+  B[0] = 3.;
+  B[1] = 0.0;
+  B[2] = 0.0;
+}
