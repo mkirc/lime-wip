@@ -1,4 +1,4 @@
-N_THREADS=2
-IN_FILE=/model/single_test.h5
-OUT_FILE=/model/image0.fits
-VTK_FILE=/model/grid.vtk
+LIME_N_THREADS=2
+LIME_IN_FILE=/model/single_test.h5
+LIME_OUT_FILE=/model/image0.fits
+LIME_VTK_FILE=/model/grid.vtk

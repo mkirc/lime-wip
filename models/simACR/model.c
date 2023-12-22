@@ -18,10 +18,10 @@ static double model_minscale=6.750628247785964e+17;
 void
 input(inputPars *par, image *img){
 
-  char* vtk_file = getenv("VTK_FILE");
-  char* in_file = getenv("IN_FILE");
-  char* out_file = getenv("OUT_FILE");
-  char* nThreadsChar = getenv("N_THREADS");
+  char* vtk_file = getenv("LIME_VTK_FILE");
+  char* in_file = getenv("LIME_IN_FILE");
+  char* out_file = getenv("LIME_OUT_FILE");
+  char* nThreadsChar = getenv("LIME_N_THREADS");
   unsigned long n_threads = strtoul(nThreadsChar, NULL, 10);
   /* long n_threads = strtol(getenv("N_THREADS"), NULL, 10); */
 
